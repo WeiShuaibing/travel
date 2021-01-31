@@ -3,45 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>校园旅行拼团</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
 
     <link rel="stylesheet" href="css/vant.css">
     <script src="js/vue.js"></script>
     <script src="js/axios.js"></script>
     <script src="js/vant.js"></script>
+    <script src="js/vue-router.js"></script>
 </head>
-<body style="margin: 0;padding: 0;">
-    <div style="width: 100%;height: 100px;background-color: #8c939d">
-        <div style="width: 60%;margin: 0 auto;text-align: center;line-height: 2">
-            <h1>校园旅行拼团</h1>
+<body style="margin: 0;padding: 0;background-color: #e9e9eb;">
+    <div style="width: 100%;">
+        <div style="width: 60%;margin: 0 auto;text-align: center;line-height: 1.5">
+            <h2>校园旅行拼团</h2>
         </div>
     </div>
-    <div id="app" style="width: 95%;margin: 0 auto;">
-        <van-button type="primary">主要按钮</van-button>
-        <van-button type="info">信息按钮</van-button>
-        <van-button type="default">默认按钮</van-button>
+    <div id="app" style="width: 100%;">
+        <div class="scenicItem" v-for="item in scenics">
+            <div class="img">
+                <van-image width="100%" height="120" radius="15" :src="item.cover"/>
+            </div>
+            <div style="padding: 5px;margin-top: 5px;">
+                <span style="font-size: 18px;font-weight: 600;">{{item.name}}</span>
+                <span style="color: #666666;font-size: 16px;">&nbsp;&nbsp;&nbsp;{{item.address}}</span><br/>
+                <span style="margin-top: 10px;">{{item.des}}</span>
+            </div>
+            <van-row>
+                <van-col span="6" :offset="1">
+                    <van-tag plain type="warning">原价：￥{{item.price}}</van-tag>
+                </van-col>
+                <van-col span="4" offset="12" style="padding: 5px;">
+                    <van-button @click="toDetail(item)" size="small" round color="linear-gradient(to right, #ff6034, #ee0a24)">
+                        详情
+                    </van-button>
+                </van-col>
+            </van-row>
+        </div>
+        <!--底部导航栏-->
+        <div style="height: 100px;"></div>
         <div class="bottom">
-
+            <van-tabbar v-model="active">
+                <van-tabbar-item icon="photo">景点</van-tabbar-item>
+                <van-tabbar-item icon="manager">我的</van-tabbar-item>
+            </van-tabbar>
         </div>
     </div>
 </body>
 </html>
 <script>
-import Vue from 'js/vue';
-import Vant from 'js/vant';
-import 'vant/lib/index.css';
-Vue.use(Vant);
+Vue.use(VueRouter)
 var app = new Vue({
     el: '#app',
     data: {
-
+        active: 0,
+        scenics: []
     },
     mounted() {
-
+        this.getAllScenic()
     },
     methods: {
-
+        toDetail(item) {
+            console.log(item)
+            window.location.href = "scenicDetail.html?scenicId=" + item.scenicId;
+        },
+        getAllScenic() {
+            console.log('getALL')
+            axios.get('/scenic/getAll').then(res => {
+                console.log(res.data)
+                this.scenics = res.data.data
+            })
+        }
     }
 })
+Vue.use(vant);
 </script>
 <style>
     * {
@@ -49,22 +84,11 @@ var app = new Vue({
         padding: 0;
         font-family: '微软雅黑', Tahoma, '宋体', Arial, Lucida, Verdana, Helvetica, sans-serif;
     }
-    .el-tag + .el-tag {
-        margin-left: 10px;
-        margin-top: 10px;
-    }
-    .button-new-tag {
-        margin-left: 10px;
-        height: 32px;
-        line-height: 30px;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-top: 10px;
-    }
-    .input-new-tag {
-        width: 90px;
-        margin-left: 10px;
-        vertical-align: bottom;
+    .scenicItem{
+        width: 96%;
+        margin: 0 auto;
+        border-radius: 15px;
+        box-shadow: 10px 5px 5px #888888;
         margin-top: 10px;
     }
 </style>

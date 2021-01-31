@@ -23,14 +23,33 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public R login(User user) {
+    public R login(@RequestBody User user) {
         QueryWrapper<User> query = Wrappers.<User>query();
         query.eq("phone", user.getPhone());
         User one = userService.getOne(query);
+        if (one == null) {
+            return new R(20001, "账号不存在！！！");
+        }
         if (one.getPassword().equals(user.getPassword())) {
             return new R("登陆成功");
         } else {
             return new R(20001, "账号或密码错误！！！");
+        }
+    }
+
+    @PostMapping("/register")
+    public R register(@RequestBody User user) {
+        User byPhone = userService.getOne(Wrappers.<User>query().eq("phone", user.getPhone()));
+        if (byPhone == null) {
+            user.setPassword(user.getPhone());
+            boolean save = userService.save(user);
+            if (save) {
+                return new R("注册成功！");
+            } else {
+                return new R("服务异常，注册失败！！！");
+            }
+        } else {
+            return new R(user.getPhone() + "用户已经存在");
         }
     }
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>校园旅行拼团</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+    <link rel="stylesheet" href="css/vant.css">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/vant.js"></script>
+
+</head>
+<body style="margin: 0;padding: 0;background-color: #e9e9eb;">
+    <!--<div style="width: 100%;">
+        <div style="width: 60%;margin: 0 auto;text-align: center;line-height: 1.5">
+            <h2>校园旅行拼团</h2>
+        </div>
+    </div>-->
+    <div id="app" style="width: 100%;">
+        <van-row>
+            <van-image width="100%" height="140" :src="scenic.cover"/>
+        </van-row>
+        <van-row>
+            <div style="padding: 5px;margin-top: 5px;">
+                <span style="font-size: 18px;font-weight: 600;">{{scenic.name}}</span>
+                <span style="color: #666666;font-size: 16px;">&nbsp;&nbsp;&nbsp;{{scenic.address}}</span><br/>
+                <span style="margin-top: 15px;">{{scenic.des}}</span>
+            </div>
+        </van-row>
+        <van-row>
+            <div v-html="scenic.text"></div>
+        </van-row>
+
+        <!--底部导航栏-->
+        <div style="height: 100px;"></div>
+        <van-submit-bar :price="scenic.price" label="原价" button-text="拼单" @submit="pindan" />
+        <van-action-sheet
+                v-model="show"
+                :actions="actions"
+                cancel-text="取消"
+                close-on-click-action
+                @select="pinDanSelect"
+        />
+        <!--<div style="width: 100%;position:fixed;bottom: 0px;background-color: #FFF;height: 45px;">
+            <div style="padding-top: 3px;">,
+
+            </div>
+        </div>-->
+    </div>
+</body>
+</html>
+<script>
+var app = new Vue({
+    el: '#app',
+    data: {
+        active: 0,
+        scenic: {},
+        show: false,
+        actions: []
+    },
+    mounted() {
+        this.getScenicById()
+    },
+    methods: {
+        pinDanSelect(item) {
+            this.show = false
+            console.log(item)
+        },
+        buildPindTuanAction() {
+          this.actions.push({name: '汽车拼团 ￥' + this.scenic.priceCar + "  已拼"+this.scenic.pindanNum.charAt(0) + "人", id: 'car'})
+          this.actions.push({name: '火车拼团 ￥' + this.scenic.priceTrain + "  已拼"+this.scenic.pindanNum.charAt(1) + "人", id: 'train'})
+          this.actions.push({name: '飞机拼团 ￥' + this.scenic.pricePlane + "  已拼"+this.scenic.pindanNum.charAt(2) + "人", id: 'plane'})
+        },
+        pindan() {
+            this.show = true
+        },
+        getScenicById() {
+            console.log(this.getParam().scenicId)
+            var scenicId = this.getParam().scenicId
+            axios.get('/scenic/getById', {
+                params: {
+                    id: scenicId
+                }
+            }).then(res => {
+                console.log(res.data)
+                this.scenic = res.data.data
+                this.buildPindTuanAction()
+            })
+
+        },
+        getParam() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
+    }
+})
+Vue.use(vant);
+</script>
+<style scoped>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: '微软雅黑', Tahoma, '宋体', Arial, Lucida, Verdana, Helvetica, sans-serif;
+    }
+    .scenicItem{
+        width: 96%;
+        margin: 0 auto;
+        border-radius: 15px;
+        box-shadow: 10px 5px 5px #888888;
+        margin-top: 10px;
+    }
+</style>
