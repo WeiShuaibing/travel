@@ -31,7 +31,7 @@ public class UserController {
             return new R(20001, "账号不存在！！！");
         }
         if (one.getPassword().equals(user.getPassword())) {
-            return new R("登陆成功");
+            return new R(one);
         } else {
             return new R(20001, "账号或密码错误！！！");
         }
@@ -39,6 +39,8 @@ public class UserController {
 
     @PostMapping("/register")
     public R register(@RequestBody User user) {
+
+        user.setPassword(user.getPhone());
         User byPhone = userService.getOne(Wrappers.<User>query().eq("phone", user.getPhone()));
         if (byPhone == null) {
             user.setPassword(user.getPhone());
@@ -49,7 +51,7 @@ public class UserController {
                 return new R("服务异常，注册失败！！！");
             }
         } else {
-            return new R(user.getPhone() + "用户已经存在");
+            return new R(20001, user.getPhone() + "用户已经存在");
         }
     }
 

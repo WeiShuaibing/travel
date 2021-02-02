@@ -20,7 +20,7 @@
               <div style="width: 60%;margin: 0 auto;text-align: center;line-height: 1.5">
                   <h2>校园旅行拼团 - 注册</h2>
               </div>
-              <van-cell-group>
+              <van-cell-group style="margin-top: 10px;">
                   <van-field v-model="user.name" label="姓名" />
               </van-cell-group>
                   <!-- 输入手机号，调起手机号键盘 -->
@@ -32,6 +32,9 @@
               </van-cell-group>
               <van-cell-group>
                   <van-field v-model="user.myclass" label="班级" />
+              </van-cell-group>
+              <van-cell-group>
+                  <van-field v-model="user.userId" label="学号" />
               </van-cell-group>
 
               <div style="padding: 5px;">
@@ -75,6 +78,7 @@ var app = new Vue({
     el: '#app',
     data: {
         user: {
+            userId: '',
             name: '',
             phone: '',
             school: '',
@@ -88,10 +92,23 @@ var app = new Vue({
     methods: {
         register() {
             let that = this
-            console.log('湿哒哒多')
-            axios.post('/user/register', that.user).then(res => {
-                console.log(res.data)
-            })
+            console.log(that.user)
+            if (that.user.name === '' || that.user.phone === '' ||
+            that.user.school === '' || that.user.myclass === '' ||
+            that.user.type === '' || that.user.sex === '' || that.user.userId === '') {
+                that.$notify('请完善内容！！！');
+            } else {
+                axios.post('/user/register', that.user).then(res => {
+                    console.log(res.data)
+                    if (res.data.code === 20001) {
+                        that.$notify(res.data.msg);
+                    } else {
+                        that.$notify('注册成功！！！');
+                        window.location.href = "login.html"
+                    }
+                })
+            }
+
         },
     }
 })

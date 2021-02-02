@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class User {
 
-    private int userId;
+    private String userId;
     private String name;
     private String school;
     private String myclass;
@@ -27,12 +27,27 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateDate; //更新时间
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", school='" + school + '\'' +
+                ", myclass='" + myclass + '\'' +
+                ", type='" + type + '\'' +
+                ", sex='" + sex + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
