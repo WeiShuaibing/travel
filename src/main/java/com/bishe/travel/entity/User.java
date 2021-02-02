@@ -2,6 +2,7 @@ package com.bishe.travel.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -10,7 +11,7 @@ import java.util.Date;
  * 用戶实体类
  */
 public class User {
-
+    @TableId
     private String userId;
     private String name;
     private String school;
