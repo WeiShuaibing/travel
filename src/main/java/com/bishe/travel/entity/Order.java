@@ -17,6 +17,9 @@ public class Order {
 
     private int scenicId;
     private int userId;
+    private int status;
+    private String type;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createDate; //创建时间
@@ -27,8 +30,26 @@ public class Order {
                 "id=" + id +
                 ", scenicId=" + scenicId +
                 ", userId=" + userId +
+                ", status=" + status +
+                ", type='" + type + '\'' +
                 ", createDate=" + createDate +
                 '}';
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getId() {
