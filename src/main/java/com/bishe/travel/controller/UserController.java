@@ -78,8 +78,9 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public R save(User user) {
-        boolean b = userService.saveOrUpdate(user);
+    public R save(@RequestBody User user) {
+        System.out.println(user);
+        boolean b = userService.updateById(user);
         if (b) {
             return new R();
         } else {

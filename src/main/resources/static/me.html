@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-校园旅行拼团</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+    <link rel="stylesheet" href="css/vant.css">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/vant.js"></script>
+    <script src="js/vue-router.js"></script>
+</head>
+<body style="margin: 0;padding: 0;background-color: #e9e9eb;">
+    <!--<div style="width: 100%;">
+        <div style="width: 60%;margin: 0 auto;text-align: center;line-height: 1.5">
+            <h2>校园旅行拼团</h2>
+        </div>
+    </div>-->
+    <div id="app" style="width: 100%;">
+          <div style="margin-top: 150px;">
+              <van-cell-group>
+                  <van-field label="姓名" v-model="userInfo.name" :disabled="readOnly" />
+              </van-cell-group>
+              <van-cell-group>
+                  <van-field label="学号" v-model="userInfo.userId" :disabled="readOnly" />
+              </van-cell-group>
+              <van-cell-group>
+                  <van-field label="手机" v-model="userInfo.phone" disabled= />
+              </van-cell-group>
+              <van-cell-group>
+                  <van-field label="学校" v-model="userInfo.school" :disabled="readOnly" />
+              </van-cell-group>
+              <van-cell-group>
+                  <van-field label="班级" v-model="userInfo.myclass" :disabled="readOnly" />
+              </van-cell-group>
+              <van-row>
+                  <van-col :span="2" :offset="20" v-if="!isEdit">
+                      <van-button type="info" size="mini" plain @click="editUserInfo">编辑</van-button>
+                  </van-col>
+                  <van-col :span="2" :offset="20" v-if="isEdit">
+                      <van-button type="primary" size="mini" plain @click="saveUserInfo">保存</van-button>
+                  </van-col>
+              </van-row>
+
+              <div style="margin-top: 20px;">
+                  <van-button type="info" plain round size="large" @click="myOrder">我的订单</van-button>
+              </div>
+          </div>
+    </div>
+</body>
+</html>
+<script>
+Vue.use(VueRouter)
+var app = new Vue({
+    el: '#app',
+    data: {
+        isEdit: false,
+        readOnly: true,
+        userInfo: {}
+    },
+    mounted() {
+        this.isLogin()
+    },
+    methods: {
+        myOrder() {
+            console.log('我的订单')
+        },
+        getUserInfo() {
+            let that = this
+            axios.get('/user/getById', {
+                params: {
+                   id: that.userInfo.userId
+                }
+            }).then(res => {
+                 this.userInfo = res.data.data
+            })
+        },
+        saveUserInfo() {
+            console.log('save')
+            let that = this
+            console.log(this.userInfo)
+            axios.post('/user/save', that.userInfo).then(res => {
+                console.log(res.data)
+                if (res.data.code === 20001) {
+                    that.$notify(res.data.msg);
+                    this.isEdit = false
+                    this.readOnly = true
+                } else {
+                    that.$notify('修改成功！！！');
+                    this.isEdit = false
+                    this.readOnly = true
+                    this.getUserInfo()
+                }
+            })
+        },
+        editUserInfo() {
+            console.log('edit')
+            console.log(this.userInfo)
+            this.readOnly = false
+            this.isEdit = true
+        },
+        isLogin() {
+            if (!localStorage.getItem("userInfo")) {
+                window.location.href = "login.html"
+            } else {
+                let u = JSON.parse(localStorage.getItem("userInfo"))
+                this.userInfo = u
+            }
+        }
+    }
+})
+Vue.use(vant);
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: '微软雅黑', Tahoma, '宋体', Arial, Lucida, Verdana, Helvetica, sans-serif;
+    }
+</style>
