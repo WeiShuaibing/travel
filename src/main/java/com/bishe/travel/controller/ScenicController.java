@@ -43,11 +43,11 @@ public class ScenicController {
     public R getAll(String matchStr) {
         System.out.println(matchStr);
         if (matchStr == null || matchStr.equals("")) {
-            List<Scenic> list = scenicService.list();
+            List<Scenic> list = scenicService.list(Wrappers.<Scenic>query().orderByDesc("scenic_id"));
             return new R(list);
         } else {
             QueryWrapper<Scenic> query = Wrappers.<Scenic>query();
-            query.like("name", matchStr).or().like("address", matchStr).or().like("des", matchStr).or()
+            query.orderByDesc("scenic_id").like("name", matchStr).or().like("address", matchStr).or().like("des", matchStr).or()
                     .like("text", matchStr);
             return new R(scenicService.list(query));
         }

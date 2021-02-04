@@ -3,6 +3,7 @@ package com.bishe.travel.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -10,13 +11,14 @@ import java.util.Date;
 /**
  * 用戶实体类
  */
+@TableName("myorder")
 public class Order {
 
     @TableId(type = IdType.AUTO)
     private int id;
 
     private int scenicId;
-    private int userId;
+    private String userId;
     private int status;
     private String type;
 
@@ -29,7 +31,7 @@ public class Order {
         return "Order{" +
                 "id=" + id +
                 ", scenicId=" + scenicId +
-                ", userId=" + userId +
+                ", userId='" + userId + '\'' +
                 ", status=" + status +
                 ", type='" + type + '\'' +
                 ", createDate=" + createDate +
@@ -68,11 +70,11 @@ public class Order {
         this.scenicId = scenicId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
