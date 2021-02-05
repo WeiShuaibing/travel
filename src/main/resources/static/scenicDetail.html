@@ -35,17 +35,14 @@
         </van-row>
 
         <!--加载显示-->
-        <van-loading size="24px" vertical v-if="showLoading">加载中...</van-loading>
+<!--        <van-loading color="#0094ff" text-color="#0094ff" size="24px" vertical v-if="showLoading">支付中...</van-loading>-->
+
 
         <!--底部导航栏-->
         <div style="height: 100px;"></div>
         <van-submit-bar :price="scenic.price" label="原价" button-text="拼单" @submit="pindan" />
         <van-action-sheet v-model="show" :actions="actions" cancel-text="取消" close-on-click-action @select="pinDanSelect"/>
-        <!--<div style="width: 100%;position:fixed;bottom: 0px;background-color: #FFF;height: 45px;">
-            <div style="padding-top: 3px;">,
 
-            </div>
-        </div>-->
     </div>
 </body>
 </html>
@@ -57,7 +54,7 @@ var app = new Vue({
         scenic: {},
         userInfo: {},
         show: false,
-        showLoading: true,
+        showLoading: false,
         actions: []
     },
     mounted() {
@@ -67,22 +64,28 @@ var app = new Vue({
         pinDanSelect(item) {
             this.show = false
             let that = this
-            setTimeout(function () {
-                that.showLoading = true
-            }, 2000)
-            axios.post('/order/userPintuan', {
-                type: item.id,
-                userId: that.userInfo.userId,
-                scenicId: this.getParam().scenicId
-            }).then(res => {
-                console.log(res.data)
-                that.$notify(res.data.msg);
-                /*if (res.data.code == 20000) {
-                    that.$notify('拼团成功');
-                } else {
-                    that.$notify(res.data.msg);
-                }*/
+
+            this.$dialog.alert({
+                message: '支付中...',
+                showConfirmButton: false
+            }).then(() => {
+                // on close
+
             })
+            setTimeout(function () {
+                that.$dialog.close()
+
+                axios.post('/order/userPintuan', {
+                    type: item.id,
+                    userId: that.userInfo.userId,
+                    scenicId: that.getParam().scenicId
+                }).then(res => {
+                    console.log(res.data)
+                    that.$notify(res.data.msg);
+                })
+            }, 2000)
+
+
         },
         buildPindTuanAction() {
           this.actions.push({name: '汽车拼团 ￥' + this.scenic.priceCar + "  已拼"+this.scenic.pindanNum.charAt(0) + "人", id: 'car'})
