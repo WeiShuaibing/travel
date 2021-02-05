@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-校园旅行拼团</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+    <link rel="stylesheet" href="css/vant.css">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/vant.js"></script>
+    <script src="js/vue-router.js"></script>
+</head>
+<body style="margin: 0;padding: 0;background-color: #e9e9eb;">
+    <div id="app" style="width: 100%;">
+        <van-panel
+                v-for="item in orderList"
+                :key="item.id"
+                :title="item.scenic.name"
+                :desc="item.scenic.des"
+                :status="item.type | orderTypeFilter">
+            <div style="margin: 10px;line-height: 2;margin-bottom: 10px;">
+               <span style="color: #3a8ee6"> {{item.status | orderStatusFilter}}</span>
+            </div>
+        </van-panel>
+
+        <!--底部导航栏-->
+        <div style="height: 100px;"></div>
+        <div class="bottom">
+            <van-tabbar v-model="active" @change="barChange">
+                <van-tabbar-item icon="photo">景点</van-tabbar-item>
+                <van-tabbar-item icon="manager">我的</van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+
+
+</body>
+</html>
+<script>
+Vue.use(VueRouter)
+var app = new Vue({
+    el: '#app',
+    data: {
+        userInfo: {},
+        active: -1,
+        orderList: []
+    },
+    mounted() {
+        this.isLogin()
+        this.myOrderList()
+    },
+    filters: {
+        orderStatusFilter(val) {
+            if (val === 0 ) {
+                return '拼单中...'
+            } else {
+                return '拼单成功 !'
+            }
+        },
+        orderTypeFilter(val) {
+            console.log(val)
+            if (val === 'car') {
+                return '汽车拼团'
+            }
+            if (val === 'train') {
+                return '火车拼团'
+            }
+            if (val === 'plane') {
+                return '飞机拼团'
+            }
+        }
+    },
+    methods: {
+        barChange(index) {
+            if (index === 0) {
+                window.location.href = "index.html"
+            } else if (index === 1) {
+                window.location.href = "me.html"
+            }
+        },
+        myOrderList() {
+            let that = this
+            axios.get('/order/orderList', {
+                params: {
+                    userId: that.userInfo.userId
+                }
+            }).then(res => {
+                console.log(res.data.data)
+                that.orderList = res.data.data
+            })
+        },
+        isLogin() {
+            if (!localStorage.getItem("userInfo")) {
+                window.location.href = "login.html"
+            } else {
+                let u = JSON.parse(localStorage.getItem("userInfo"))
+                this.userInfo = u
+            }
+            console.log(this.userInfo)
+        }
+    }
+})
+Vue.use(vant);
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: '微软雅黑', Tahoma, '宋体', Arial, Lucida, Verdana, Helvetica, sans-serif;
+    }
+</style>

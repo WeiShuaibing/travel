@@ -2,6 +2,7 @@ package com.bishe.travel.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,9 +23,29 @@ public class Order {
     private int status;
     private String type;
 
+    @TableField(exist = false)
+    private Scenic scenic;
+    @TableField(exist = false)
+    private User user;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createDate; //创建时间
+
+    public Scenic getScenic() {
+        return scenic;
+    }
+
+    public void setScenic(Scenic scenic) {
+        this.scenic = scenic;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {

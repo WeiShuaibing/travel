@@ -7,6 +7,7 @@ import com.bishe.travel.entity.Order;
 import com.bishe.travel.entity.Scenic;
 import com.bishe.travel.service.OrderService;
 import com.bishe.travel.service.ScenicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,4 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements OrderService {
 
+    @Autowired
+    private OrderDao orderDao;
+
+    @Override
+    public int updateOrderStatus(String userId, int scenicId, int status) {
+        return orderDao.updateOrderStatus(userId, scenicId, status);
+    }
 }

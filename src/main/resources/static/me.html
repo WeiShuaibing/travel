@@ -20,7 +20,7 @@
         </div>
     </div>-->
     <div id="app" style="width: 100%;">
-          <div style="margin-top: 150px;">
+         <div style="margin-top: 150px;">
               <van-cell-group>
                   <van-field label="姓名" v-model="userInfo.name" :disabled="readOnly" />
               </van-cell-group>
@@ -49,6 +49,15 @@
                   <van-button type="info" plain round size="large" @click="myOrder">我的订单</van-button>
               </div>
           </div>
+
+        <!--底部导航栏-->
+        <div style="height: 100px;"></div>
+        <div class="bottom">
+            <van-tabbar v-model="active" @change="barChange">
+                <van-tabbar-item icon="photo">景点</van-tabbar-item>
+                <van-tabbar-item icon="manager">我的</van-tabbar-item>
+            </van-tabbar>
+        </div>
     </div>
 </body>
 </html>
@@ -58,6 +67,7 @@ var app = new Vue({
     el: '#app',
     data: {
         isEdit: false,
+        active: 1,
         readOnly: true,
         userInfo: {}
     },
@@ -65,8 +75,14 @@ var app = new Vue({
         this.isLogin()
     },
     methods: {
+        barChange(index) {
+            if (index === 0) {
+                window.location.href = "index.html"
+            }
+        },
         myOrder() {
             console.log('我的订单')
+            window.location.href = "myOrder.html"
         },
         getUserInfo() {
             let that = this

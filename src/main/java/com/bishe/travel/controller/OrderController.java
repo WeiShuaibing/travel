@@ -26,6 +26,17 @@ public class OrderController {
     @Autowired
     private ScenicService scenicService;
 
+    @GetMapping("/orderList")
+    public R orderList(int userId) {
+        QueryWrapper<Order> query = Wrappers.<Order>query();
+        query.eq("user_id", userId).orderByDesc("id");
+        List<Order> list = service.list(query);
+        for (Order order : list) {
+            order.setScenic(scenicService.getById(order.getScenicId()));
+        }
+        return new R(list);
+    }
+
     @PostMapping("/userPintuan")
     public R userPintuan(@RequestBody Order order) {
 
@@ -56,17 +67,23 @@ public class OrderController {
                 pindanNumCharts[0] = '0';
                 r.setCode(20002);
                 r.setMsg("恭喜您拼单成功");
+                // 拼单成功，order表中的数据status应该设置为1 表明拼单成功！
+                service.updateOrderStatus(order.getUserId(), order.getScenicId(), 1);
+
             } else {
                 int num = Integer.parseInt(String.valueOf(scenic.getPindanNum().charAt(0))) + 1;
                 pindanNumCharts[0] = (char) (num + '0');
                 r.setCode(20000);
                 r.setMsg("已开始拼单...");
+
             }
         } else if (order.getType().equals("train")) {
             if (count == 4 || pindanNumCharts[1] == '4') {
                 pindanNumCharts[1] = '0';
                 r.setCode(20002);
                 r.setMsg("恭喜您拼单成功");
+                // 拼单成功，order表中的数据status应该设置为1 表明拼单成功！
+                service.updateOrderStatus(order.getUserId(), order.getScenicId(), 1);
             } else {
                 int num = Integer.parseInt(String.valueOf(scenic.getPindanNum().charAt(1))) + 1;
                 pindanNumCharts[1] = (char) (num + '0');
@@ -78,6 +95,8 @@ public class OrderController {
                 pindanNumCharts[2] = '0';
                 r.setCode(20002);
                 r.setMsg("恭喜您拼单成功");
+                // 拼单成功，order表中的数据status应该设置为1 表明拼单成功！
+                service.updateOrderStatus(order.getUserId(), order.getScenicId(), 1);
             } else {
                 int num = Integer.parseInt(String.valueOf(scenic.getPindanNum().charAt(2))) + 1;
                 pindanNumCharts[2] = (char) (num + '0');
