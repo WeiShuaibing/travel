@@ -73,7 +73,9 @@ public class UserController {
 
     @GetMapping("/getAll")
     public R getAll() {
-        List<User> list = userService.list();
+        QueryWrapper<User> query = Wrappers.<User>query();
+        query.orderByDesc("create_date");
+        List<User> list = userService.list(query);
         return new R(list);
     }
 

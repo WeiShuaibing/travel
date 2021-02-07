@@ -7,6 +7,7 @@ import com.bishe.travel.entity.R;
 import com.bishe.travel.entity.Scenic;
 import com.bishe.travel.service.OrderService;
 import com.bishe.travel.service.ScenicService;
+import com.bishe.travel.service.UserService;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,14 @@ public class OrderController {
     private OrderService service;
     @Autowired
     private ScenicService scenicService;
+    @Autowired
+    private UserService userService;
 
+    /**
+     * 根据用户id查询他的订单
+     * @param userId
+     * @return
+     */
     @GetMapping("/orderList")
     public R orderList(int userId) {
         QueryWrapper<Order> query = Wrappers.<Order>query();
@@ -36,6 +44,19 @@ public class OrderController {
         }
         return new R(list);
     }
+
+    @GetMapping("/allOrder")
+    public R allOrder(){
+        QueryWrapper<Order> query = Wrappers.<Order>query();
+        query.orderByDesc("id");
+        List<Order> list = service.list(query);
+        for (Order order : list) {
+            order.setScenic(scenicService.getById(order.getScenicId()));
+            order.setUser(userService.getById(order.getUserId()));
+        }
+        return new R(list);
+    }
+
 
     @PostMapping("/userPintuan")
     public R userPintuan(@RequestBody Order order) {
@@ -108,6 +129,16 @@ public class OrderController {
         scenicService.updateById(scenic);
 
         return r;
+    }
+
+    @GetMapping("/deleteById")
+    public R deleteById(int id) {
+        boolean b = service.removeById(id);
+        if (b) {
+            return new R();
+        } else {
+            return new R(20001, "服务异常，删除订单失败！");
+        }
     }
 
 }
